@@ -8,5 +8,4 @@ export default function ProductCard(props){
         <p>{props.description}</p>
       </div>
     )
-
-  }
+}
