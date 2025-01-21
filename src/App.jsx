@@ -1,28 +1,38 @@
 import './App.css'
-import ProductCard from './components/productCard'
+import { BsGraphDown } from "react-icons/bs";
+import { FaRegBookmark, FaRegUser } from 'react-icons/fa';
+import { IoBookmarkOutline } from "react-icons/io5";
+import { MdOutlineSpeaker } from "react-icons/md";
+
+
 
 function App() {
   
 
   return (
-    <div>
-
-    <ProductCard name="Audio Setup" price="3250/-" 
-
-    description="loremasd adfj asld as fasdf sadf" 
-
-    photoUrl="https://img.drz.lazcdn.com/g/kf/S6cfb0ee8d9f74ebb9660fd04b3622e364.jpg_720x720q80.jpg_.webp"  
-    
-    />
-    <ProductCard name="Retro Mini Game Machine Console"
-
-    price="2374/-"
-
-    description = "500 IN 1 Retro Mini Game Machine Console Gameboy Rechargeable Portable Video Handheld Ma-rio PSP Built-in 400 Games"
-
-    photoUrl="https://img.drz.lazcdn.com/g/kf/S7fa0aa8213b44f91a73ca3bb21c9e3266.jpg_720x720q80.jpg_.webp"/>
-
-  </div>
+    <div className='w-full h-screen flex'>
+      <div className='w-[400px] h-full bg-green-200'>
+        <button className='w-full h-[40px] text-[25px] font-bold flex justify-center items-center'>
+        <BsGraphDown/>
+          Dashboard
+        </button>
+        <button className='w-full h-[40px] text-[25px] font-bold flex justify-center items-center'>
+        <FaRegBookmark/>
+          Bookings
+        </button>
+        <button className='w-full h-[40px] text-[25px] font-bold flex justify-center items-center'>
+        <MdOutlineSpeaker/>
+          Items
+        </button>
+        <button className='w-full h-[40px] text-[25px] font-bold flex justify-center items-center'>
+        <FaRegUser/>
+          Users
+        </button>
+      </div>
+      <div className='w-full bg-red-900'>
+          
+      </div>
+    </div>
   )
 }
 
