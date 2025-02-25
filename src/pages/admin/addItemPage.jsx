@@ -10,6 +10,7 @@ export default function AddItemPage() {
 	const [productCategory, setProductCategory] = useState("audio");
 	const [productDimensions, setProductDimensions] = useState("");
 	const [productDescription, setProductDescription] = useState("");
+	const [productImages,setProductImages] = useState("")
     const navigate = useNavigate()
 
 	async function handleAddItem() {
