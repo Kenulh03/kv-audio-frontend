@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import mediaUpload from "../../utils/mediaUpload";
 
 export default function AddItemPage() {
 	const [productKey, setProductKey] = useState("");
@@ -14,6 +15,18 @@ export default function AddItemPage() {
     const navigate = useNavigate()
 
 	async function handleAddItem() {
+		const promises = [];
+
+		//image 4
+		for(let i=0;i<productImages.length;i++){
+			console.log(productImages[i]);
+			const promise = mediaUpload(productImages[i]);
+			promises.push(promise)
+			// if(i ==5){
+			// 	toast.error("You can only upload 25 images at a time");
+			// 	break;
+			// }
+		}
 		console.log(
 			productKey,
 			productName,
@@ -26,6 +39,17 @@ export default function AddItemPage() {
 
 		if (token) {
 			try {
+
+				// Promise.all(promises)
+				// 	.then((result) => {
+				// 		console.log(result);
+				// 	})
+				// 	.catch((err) => {
+				// 		toast.error(err);
+				// 	});
+
+				const imageUrls = await Promise.all(promises);
+
 				const result = await axios.post(
 					`${import.meta.env.VITE_BACKEND_URL}/api/products`,
 					{
@@ -100,6 +124,14 @@ export default function AddItemPage() {
 					onChange={(e) => setProductDescription(e.target.value)}
 					className="w-full p-2 border rounded"
 				/>
+				<input
+					type="file"
+					multiple
+					onChange={(e)=>{
+						setProductImages(e.target.files);
+					}}
+					className="w-full p-2 border rounded"
+					/>
 				<button
 					onClick={handleAddItem}
 					className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -113,3 +145,5 @@ export default function AddItemPage() {
 		</div>
 	);
 }
+//git fetch --all kiyala command eka type karanna aye me prshne awoth.
+//mata backend eke error ekath poddk pennanna
