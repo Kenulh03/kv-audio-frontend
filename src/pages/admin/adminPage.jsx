@@ -5,6 +5,7 @@ import { Link, Route, Routes } from "react-router-dom";
 import AdminItemsPage from "./adminItemsPage";
 import AddItemPage from "./addItemPage";
 import UpdateItemPage from "./updateItemPage";
+import AdminOrdersPage from "./adminBookingPage";
 
 export default function AdminPage() {
   return (
@@ -14,9 +15,9 @@ export default function AdminPage() {
           <BsGraphDown />
           Dashboard
         </button>
-        <Link to="/admin/bookings" className='w-full h-[40px] text-[25px] font-bold flex justify-center items-center'>
+        <Link to="/admin/orders" className='w-full h-[40px] text-[25px] font-bold flex justify-center items-center'>
           <FaRegBookmark />
-          Bookings
+          Orders
         </Link>
         <Link to="/admin/items" className='w-full h-[40px] text-[25px] font-bold flex justify-center items-center'>
           <MdOutlineSpeaker />
@@ -29,8 +30,9 @@ export default function AdminPage() {
       </div>
       <div className='w-[calc(100vw-200px)]'>
         <Routes path="/*">
-          <Route path="/bookings" element={<h1>Booking</h1>}/>
+          <Route path="/orders" element={<AdminOrdersPage/>}/>
           <Route path="/items" element={<AdminItemsPage/>}/>
+          <Route path="/users" element={<AdminUsersPage/>}/>
           <Route path="/items/add" element={<AddItemPage/>}/>
           <Route path="/items/edit" element={<UpdateItemPage/>}/>
         </Routes>
