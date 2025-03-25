@@ -29,17 +29,19 @@ export default function ProductOverview(){
                     </div>
             }
             {
-                loadingStatus == "loaded" && <div className=" w-full h-full flex justify-center items-center">
-                      <div className="w-[49%]  h-full">
+                loadingStatus == "loaded" && <div className=" w-full h-full flex flex-col md:flex-row justify-center items-center">
+                <h1 className="text-2xl my-6 md:hidden  font-bold text-accent text-center ">{product.name}</h1>
+                      <div className="w-full  md:w-[49%]">
                         <ImageSlider images={product.image}/>
                       </div>
-                      <div className="w-[49%]  h-full flex flex-col items-center">
-                        <h1 className="text-3xl font-bold text-accent">{product.name}</h1>
+                      <div className="w-full md:w-[49%] p-2 flex flex-col items-center">
+                        <h1 className="hidden md:block text-3xl font-bold text-accent">{product.name}</h1>
                         <h2 className="text-xl font-semibold text-gray-800">{product.category}</h2>
-                        <p className="text-gray-700 mt-4">{product.description}</p>
-                        <p className="text-lg font-bold text-green-500">{product.price}</p>
+                        <p className="text-gray-700 mt-4 text-center">{product.description}</p>
+                        <p className="text-lg text-green-500">{product.price.toFixed(2)}</p>
                         <div className="mt-4 text-sm text-gray-600">
-                            <span className="font-medium">Dimensions:</span> {product.dimensions}
+                            <span className="font-medium">Dimensions:</span>{" "}
+                            {product.dimensions}
                         </div>
                         <button className="mt-4 bg-accent text-white px-4 py-2 rounded-md" onClick={()=>{
                             addToCart(product.key, 1);

@@ -1,39 +1,41 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 
-export default function AdminOrdersPage(){
-    const [orders,setOrders] = useState([]);
-    const[loading,setLoading] = useState(true);
-    const[activeOrder,setActiveOrder] = useState(null);
-    const[modelOpened, setModalOpened] = useState(false);
+export default function AdminOrdersPage() {
+	const [orders, setOrders] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [activeOrder, setActiveOrder] = useState(null);
+	const [modalOpened, setModalOpened] = useState(false);
 
-     useEffect(() => {
-        const fetchOrders = async () =>{
-            try{
-                const token = localStorage.getItem("token");
-                const res = await axios.get(
-                    `${import.meta.env.VITE_BACKEND_URL}/api/orders/`,
-                    {
-                        headers: {
-                            Authorization: `Beare ${token}`,
-                        },
-                    }
-                );
-                console.log(res.data);
-                setOrders(res.data);
-            }catch (error) {
-                console.error("Error fetching orders:",error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        if(loading) {
-            fetchOrders();
-        }
-     },[loading]);
+	useEffect(() => {
+		const fetchOrders = async () => {
+			try {
+				const token = localStorage.getItem("token");
+				const res = await axios.get(
+					`${import.meta.env.VITE_BACKEND_URL}/api/orders/`,
+					{
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					}
+				);
+				console.log(res.data);
+				setOrders(res.data);
+			} catch (error) {
+				console.error("Error fetching orders:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+		if (loading) {
+			fetchOrders();
+		}
+	}, [loading]);
 
-     function handleOrderStatusChange(orderId,status) {
+	function handleOrderStatusChange(orderId, status) {
         const token = localStorage.getItem("token");
-
+        
         axios.put(
             `${import.meta.env.VITE_BACKEND_URL}/api/orders/status/${orderId}`,
             {
@@ -52,11 +54,11 @@ export default function AdminOrdersPage(){
             console.error(err);
             setLoading(true);
         })
-     }
+    }
 
-     return(
-        <div className="p-6">
-            <h1 className="text-2xl font-semibold mb-4">Admin Orders</h1>
+	return (
+		<div className="p-6">
+			<h1 className="text-2xl font-semibold mb-4">Admin Orders</h1>
 			{loading ? (
 				<p className="text-center text-gray-600">Loading...</p>
 			) : (
@@ -190,6 +192,6 @@ export default function AdminOrdersPage(){
 					</div>
 				</div>
 			)}
-        </div>
-     );
+		</div>
+	);
 }

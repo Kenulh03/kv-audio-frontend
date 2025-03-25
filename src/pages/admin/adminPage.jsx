@@ -6,6 +6,7 @@ import AdminItemsPage from "./adminItemsPage";
 import AddItemPage from "./addItemPage";
 import UpdateItemPage from "./updateItemPage";
 import AdminOrdersPage from "./adminBookingPage";
+import AdminUsersPage from "./adminUsersPage";
 
 export default function AdminPage() {
   return (
