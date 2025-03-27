@@ -20,7 +20,7 @@ export default function LoginPage(){
                     const user = res.data.user
                     localStorage.setItem("token",res.data.token)
                     if(user.role == "admin"){
-                        navigate("/admin/")
+                        navigate("/admin")
                     }else{
                         navigate("/")
                     }
@@ -54,7 +54,7 @@ export default function LoginPage(){
               }
 
             if(user.role == "admin"){
-                navigate("/admin/")
+                navigate("/admin")
             }else{
                 navigate("/")
             }

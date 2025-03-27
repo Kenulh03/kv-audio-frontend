@@ -8,6 +8,7 @@ export default function MobileNavPanel(props) {
 	const isOpen = props.isOpen;
 	const setOpen = props.setOpen;
 	const navigate = useNavigate();
+	const token = localStorage.getItem("token");
 
 	function goTo(route) {
 		navigate(route);
@@ -93,6 +94,14 @@ export default function MobileNavPanel(props) {
 							<MdInfoOutline className="text-2xl" />
 							About
 						</div>
+						{token && (
+            <button className="text-lg  mt-6 ml-2 p-3 bg-red-500 rounded-lg hover:bg-red-700" onClick={() => {
+              localStorage.removeItem("token");
+              window.location.href = "/login";
+            }}>
+              Logout
+            </button>
+          )}
 					</div>
 				</div>
 			)}
