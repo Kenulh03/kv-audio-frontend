@@ -3,6 +3,7 @@ import { IoMdClose } from "react-icons/io";
 import { MdPhotoLibrary, MdContacts, MdInfoOutline } from "react-icons/md";
 import { FaRegCalendarCheck } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { FaCartShopping } from "react-icons/fa6";
 
 export default function MobileNavPanel(props) {
 	const isOpen = props.isOpen;
@@ -93,6 +94,15 @@ export default function MobileNavPanel(props) {
 						>
 							<MdInfoOutline className="text-2xl" />
 							About
+						</div>
+						<div
+							onClick={() => {
+								goTo("/booking");
+							}}
+							className="text-[20px] text-accent m-1 p-2 flex items-center gap-2 cursor-pointer hover:bg-accent/10 rounded-md"
+						>
+							<FaCartShopping className="text-2xl" />
+							Cart
 						</div>
 						{token && (
             <button className="text-lg  mt-6 ml-2 p-3 bg-red-500 rounded-lg hover:bg-red-700" onClick={() => {

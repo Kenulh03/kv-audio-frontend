@@ -15,6 +15,7 @@ import AdminUsersPage from "./adminUsersPage";
 export default function AdminPage() {
   const [userCount, setUserCount] = useState(0);
   const [itemCount, setItemCount] = useState(0);
+  const [pendingOrders, setPendingOrders] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
   const token = localStorage.getItem("token");
@@ -34,6 +35,15 @@ export default function AdminPage() {
         setItemCount(res.data.count);
       })
       .catch((err) => console.error("Failed to fetch item count", err));
+  }, []);
+
+  useEffect(() => {
+    axios
+    .post(`${import.meta.env.VITE_BACKEND_URL}/api/orders/count`)
+      .then((res) => {
+        setPendingOrders(res.data);
+      })
+      .catch((err) => console.error("Failed to fetch orders", err));
   }, []);
 
   // Close sidebar on route change
@@ -124,6 +134,10 @@ export default function AdminPage() {
               <div className="bg-accent p-6 rounded-lg shadow-lg text-center">
                 <h3 className="text-xl font-semibold mb-2">Registered Users</h3>
                 <p className="text-2xl font-bold">{userCount}</p>
+              </div>
+              <div className="bg-accent p-6 rounded-lg shadow-lg text-center">
+                <h3 className="text-xl font-semibold mb-2">Pending Orders</h3>
+                <p className="text-2xl font-bold">{pendingOrders}</p>
               </div>
             </div>
           </>
