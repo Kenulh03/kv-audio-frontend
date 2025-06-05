@@ -4,97 +4,95 @@ import { CiCirclePlus } from "react-icons/ci";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
-export default function AdminItemsPage(){
-    const [items,setItems] = useState([]);
-    const [itemsLoaded,setItemsLoaded] = useState(false);
-    const navigate = useNavigate()
+export default function AdminItemsPage({ isSidebarOpen }) {  
+    const [items, setItems] = useState([]);
+    const [itemsLoaded, setItemsLoaded] = useState(false);
+    const navigate = useNavigate();
 
-    useEffect(()=>{
-        if(!itemsLoaded){
-            const token = localStorage.getItem("token");
-            axios
-                .get(`${import.meta.env.VITE_BACKEND_URL}/api/products`,{
-                    headers:{ Authorization:`Bearer ${token}` },
-                })
-                .then((res) =>{
-                    console.log(res.data);
-                    setItems(res.data);
-                    setItemsLoaded(true);
-                })
-                .catch((err)=>{
-                    console.error(err);
-                });
+    useEffect(() => {
+        if (!itemsLoaded) {
+            fetchItems();
         }
-    },[itemsLoaded]);
+    }, [itemsLoaded]);
 
-    const handleDelete = (key) =>{
-        if(window.confirm("Are you sure you want to delete this item?")){
-            setItems(items.filter((item) => item.key !== key));
+    const fetchItems = async () => {
+        try {
             const token = localStorage.getItem("token");
-            axios
-                .delete(`${import.meta.env.VITE_BACKEND_URL}/api/products/${key}` ,{
-                    headers: {Authorization: `Bearer ${token}` },
-                })
-                .then((res)=>{
-                    console.log(res.data);
-                    setItemsLoaded(false);
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
+            const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setItems(res.data);
+        } catch (err) {
+            console.error("Error fetching items:", err);
+        } finally {
+            setItemsLoaded(true);
         }
     };
 
-    return(
-        <div className="w-full h-full p-4 relative flex items-center flex-col overflow-hidden lg:ml-[250px] transition-all">
+    const handleDelete = (key) => {
+        if (window.confirm("Are you sure you want to delete this item?")) {
+            const token = localStorage.getItem("token");
+            axios
+                .delete(`${import.meta.env.VITE_BACKEND_URL}/api/products/${key}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                })
+                .then(() => setItemsLoaded(false))
+                .catch((err) => console.error(err));
+        }
+    };
+
+    return (
+        <div className={`w-full h-full p-4 transition-all ${isSidebarOpen ? "lg:ml-[250px] md:ml-[200px]" : "ml-0"}`}>
+            <h1 className="text-2xl font-semibold text-gray-800 mb-4">Manage Items</h1>
+            
+            {/* Loading Spinner */}
             {!itemsLoaded && (
-                <div className="border-4 my-4 border-b-green-500 rounded-full animate-spin w-[50px] h-[50px] "></div>
+                <div className="flex justify-center items-center my-4">
+                    <div className="border-4 border-gray-300 border-t-green-500 rounded-full w-[40px] h-[40px] animate-spin"></div>
+                </div>
             )}
-            {itemsLoaded && (
-                <div className="overflow-auto w-full max-w-full">
-                    <table className="w-full border border-gray-300 rounded-lg shadow-md bg-white text-xs md:text-sm lg:text-base">
-                        <thead className="bg-gray-100">
-                            <tr className="text-left text-black">
-                                <th className="p-2 md:p-3 border">Key</th>
-                                <th className="p-2 md:p-3 border">Name</th>
-                                <th className="p-2 md:p-3 border">Price</th>
-                                <th className="p-2 md:p-3 border">Category</th>
-                                <th className="p-2 md:p-3 border">Dimensions</th>
-                                <th className="p-2 md:p-3 border">Availability</th>
-                                <th className="p-2 md:p-3 border text-center">Actions</th>
+
+            {/* Items Table */}
+            {itemsLoaded && items.length > 0 ? (
+                <div className="overflow-x-auto w-full max-w-full text-black relative z-10">
+                    <table className="w-full min-w-[600px] border border-gray-300 rounded-lg shadow-md bg-white text-xs md:text-sm lg:text-base">
+                        <thead className="bg-gray-100 text-gray-700">
+                            <tr>
+                                <th className="p-3 border">Key</th>
+                                <th className="p-3 border">Name</th>
+                                <th className="p-3 border">Price</th>
+                                <th className="p-3 border">Category</th>
+                                <th className="p-3 border hidden md:table-cell">Dimensions</th>
+                                <th className="p-3 border">Availability</th>
+                                <th className="p-3 border text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {items.map((product, index) => (
-                                <tr
-                                    key={product.key}
-                                    className={`border ${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-200 transition-all`}
-                                >
-                                    <td className="p-2 md:p-3 border text-black">{product.key}</td>
-                                    <td className="p-2 md:p-3 border text-black">{product.name}</td>
-                                    <td className="p-2 md:p-3 border text-black">${product.price.toFixed(2)}</td>
-                                    <td className="p-2 md:p-3 border text-black">{product.category}</td>
-                                    <td className="p-2 md:p-3 border text-black">{product.dimensions}</td>
-                                    <td className="p-2 md:p-3 border">
-                                        <span
-                                            className={`px-2 py-1 rounded text-xs md:text-sm font-medium ${product.availability ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
-                                        >
-                                            {product.availability ? "Available" : "Not Available"}
+                                <tr key={product.key} className={`border ${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-200 transition-all`}>
+                                    <td className="p-3 border">{product.key}</td>
+                                    <td className="p-3 border">{product.name}</td>
+                                    <td className="p-3 border">${product.price.toFixed(2)}</td>
+                                    <td className="p-3 border">{product.category}</td>
+                                    <td className="p-3 border hidden md:table-cell">{product.dimensions}</td>
+                                    <td className="p-3 border text-center">
+                                        <span className={`px-2 py-1 rounded text-xs md:text-sm font-medium ${product.availability ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                                            {product.availability ? "Available" : "Out of Stock"}
                                         </span>
                                     </td>
-                                    <td className="p-2 md:p-3 border flex flex-wrap justify-center gap-2 md:gap-3">
-                                        <button 
-                                            onClick={()=>{ navigate(`/admin/items/edit`, {state:product} ) }}
-                                            className="bg-blue-600 text-white px-2 md:px-3 py-1 rounded hover:bg-blue-700 transition text-xs md:text-sm"
+                                    <td className="p-3 border flex flex-col md:flex-row justify-center items-center gap-2">
+                                        <button
+                                            onClick={() => navigate(`/admin/items/edit`, { state: product })}
+                                            className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition text-xs md:text-sm w-full md:w-auto flex items-center justify-center"
                                         >
-                                            <FaEdit className="inline mr-1" /> Edit
+                                            <FaEdit className="mr-1" /> Edit
                                         </button>
 
                                         <button
                                             onClick={() => handleDelete(product.key)}
-                                            className="bg-red-600 text-white px-2 md:px-3 py-1 rounded hover:bg-red-700 transition text-xs md:text-sm"
+                                            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition text-xs md:text-sm w-full md:w-auto flex items-center justify-center"
                                         >
-                                            <FaTrashAlt className="inline mr-1" /> Delete
+                                            <FaTrashAlt className="mr-1" /> Delete
                                         </button>
                                     </td>
                                 </tr>
@@ -102,11 +100,19 @@ export default function AdminItemsPage(){
                         </tbody>
                     </table>
                 </div>
+            ) : (
+                itemsLoaded && (
+                    <div className="text-center text-gray-600 mt-6">
+                        <p className="text-lg">No items found.</p>
+                        <p className="text-sm">Start by adding new items.</p>
+                    </div>
+                )
             )}
 
+            {/* Floating Add Button */}
             <Link to="/admin/items/add">
-                <CiCirclePlus className="text-[50px] md:text-[70px] absolute right-2 bottom-2 hover:text-red-900 transition duration-200 cursor-pointer" />
+                <CiCirclePlus className="fixed bottom-4 right-4 text-green-600 text-6xl hover:text-green-800 transition duration-200 cursor-pointer shadow-lg bg-white rounded-full p-1" />
             </Link>
         </div>
-    )
+    );
 }

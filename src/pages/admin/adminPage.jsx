@@ -22,29 +22,34 @@ export default function AdminPage() {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/api/users/count`)
-      .then((res) => setUserCount(res.data.count))
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/users/count`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then((res) => setUserCount(res.data.count))
       .catch((err) => console.error("Failed to fetch user count", err));
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
     axios
-      .post(`${import.meta.env.VITE_BACKEND_URL}/api/products/count`)
-      .then((res) => {
-        console.log("Item Count Response:", res.data);
+      .post(`${import.meta.env.VITE_BACKEND_URL}/api/products/count`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then((res) => {
         setItemCount(res.data.count);
       })
       .catch((err) => console.error("Failed to fetch item count", err));
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
+  
     axios
-    .post(`${import.meta.env.VITE_BACKEND_URL}/api/orders/count`)
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/orders/count`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((res) => {
         setPendingOrders(res.data);
       })
       .catch((err) => console.error("Failed to fetch orders", err));
-  }, []);
+  }, [location.pathname]);
+  
 
   // Close sidebar on route change
   useEffect(() => {

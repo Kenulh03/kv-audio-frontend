@@ -3,7 +3,6 @@ import { formatDate, loadCart } from "../../utils/cart";
 import BookingItem from "../../components/bookingItem";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { use } from "react";
 
 export default function BookingPage(){
     const [cart, setCart] = useState(loadCart());
@@ -15,17 +14,15 @@ export default function BookingPage(){
     function reloadCart(){
         setCart(loadCart());
         calculateTotal();
-        
     }
+    
     function calculateTotal(){
         const cartInfo = loadCart();
         cartInfo.startingDate = startingDate;
         cartInfo.endingDate = endingDate;
         cartInfo.days = daysBetween;
-        axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/orders/quote`,
-            cartInfo
-        ).then((res)=>{
-            console.log(res.data)
+        axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/orders/quote`, cartInfo)
+        .then((res)=>{
             setTotal(res.data.total);
         }).catch((err)=>{   
             console.error(err);
@@ -34,7 +31,7 @@ export default function BookingPage(){
 
     useEffect(()=>{
         calculateTotal();
-    },[startingDate, endingDate])
+    },[startingDate, endingDate]);
     
     function handleBookingCreation(){
         const cart = loadCart();
@@ -48,7 +45,6 @@ export default function BookingPage(){
                 Authorization: `Bearer ${token}`
             }
         }).then((res)=>{
-            console.log(res.data);
             localStorage.removeItem("cart");
             toast.success("Booking Created");
             setCart(loadCart());
@@ -59,42 +55,44 @@ export default function BookingPage(){
     }
 
     return(
-        <div className="w-full h-full flex flex-col items-center ">
-            <h1 className="text-2xl font-bold text-accent">Create Booking</h1>
-            <div className="w-full flex flex-col items-center gap-4 mt-4">
-                <label className="flex flex-col">
+        <div className="w-full min-h-screen flex flex-col items-center p-4 md:p-6 bg-gray-100">
+            <h1 className="text-2xl md:text-3xl font-bold text-accent text-center">Create Booking</h1>
+            <div className="w-full max-w-md flex flex-col items-center gap-4 mt-4">
+                <label className="w-full flex flex-col">
                     <span className="text-accent font-semibold">Starting Date:</span>
                     <input 
                         type="date" 
                         value={startingDate} 
                         onChange={(e) => setStartingDate(e.target.value)} 
-                        className="border border-secondary rounded-md p-2" 
+                        className="w-full border border-secondary rounded-md p-2"
                     />
                 </label>
-                <label className="flex flex-col">
+                <label className="w-full flex flex-col">
                     <span className="text-accent font-semibold">Ending Date:</span>
                     <input 
                         type="date" 
                         value={endingDate} 
                         onChange={(e) => setEndingDate(e.target.value)} 
-                        className="border border-secondary rounded-md p-2" 
+                        className="w-full border border-secondary rounded-md p-2"
                     />
                 </label>
-                <p className="text-accent font-medium">Total Days: {daysBetween}</p>
+                <p className="text-accent font-medium text-center">Total Days: {daysBetween}</p>
             </div>
-            <div className="w-full flex flex-col items-center mt-4">
+            <div className="w-full max-w-md flex flex-col items-center mt-4">
                 {
-                    cart.orderedItems.map((item)=>{
-                        return <BookingItem itemKey={item.key} key={item.key} qty={item.qty} refresh={reloadCart}/>
-                    })
+                    cart.orderedItems.map((item) => (
+                        <BookingItem itemKey={item.key} key={item.key} qty={item.qty} refresh={reloadCart}/>
+                    ))
                 }
             </div>
-            <div className="w-full flex justify-center mt-4">
-                <p className="text-accent font-semibold">Total: {total.toFixed(2)}</p>
+            <div className="w-full max-w-md flex justify-center mt-4">
+                <p className="text-accent font-semibold text-lg">Total: {total.toFixed(2)}</p>
             </div>
-            <div className="w-full flex justify-center mt-4">
-                <button className="bg-accent text-white px-4 py-2 rounded-md" onClick={handleBookingCreation}>Create Booking</button>
+            <div className="w-full max-w-md flex justify-center mt-4">
+                <button className="w-full bg-accent text-white px-4 py-2 rounded-md text-center" onClick={handleBookingCreation}>
+                    Create Booking
+                </button>
             </div>
         </div>
-    )
+    );
 }
